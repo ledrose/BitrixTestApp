@@ -3,7 +3,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Title");
 ?><h1>Регистрация</h1>
 <?
-if ($USER->IsAuthorized()) {
+if ($USER->IsAuthorized() && !$USER->IsAdmin()) {
     LocalRedirect("/profile/"); 
 }
 ?>
@@ -13,11 +13,11 @@ if ($USER->IsAuthorized()) {
     Array(
         "USER_PROPERTY_NAME" => "", 
         "SEF_MODE" => "N", 
-        "SHOW_FIELDS" => Array("LOGIN", "EMAIL", "PASSWORD", "CONFIRM_PASSWORD"),
-        "REQUIRED_FIELDS" => Array("LOGIN","EMAIL", "PASSWORD", "CONFIRM_PASSWORD"), 
-        "AUTH" => "Y", 
+        "SHOW_FIELDS" => Array("EMAIL", "PASSWORD", "CONFIRM_PASSWORD"),
+        "REQUIRED_FIELDS" => Array("EMAIL", "PASSWORD", "CONFIRM_PASSWORD"), 
+        "AUTH" => "N", 
         "USE_BACKURL" => "Y", 
-        "SUCCESS_PAGE" => "/profile/", 
+        "SUCCESS_PAGE" => "/auth/", 
         "SET_TITLE" => "Y", 
         "USER_PROPERTY" => Array(),
     )
