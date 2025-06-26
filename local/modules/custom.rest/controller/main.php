@@ -26,10 +26,11 @@ class RestController extends Controller
     }
 
 
-    private static function validateNumber(?int $number)
+    private static function validateNumber(?int $number, string $name)
     {
         if (!isset($number) || !is_numeric($number) || $number < 0) {
-            throw new \Exception("Неверное число");
+            throw new \Exception("Неверное cвойство " . $name);
+            return false;
         }
         return true;
     }
@@ -37,8 +38,8 @@ class RestController extends Controller
     // Получение баллов пользователя
     public function getUserLoyaltyPointsAction(int $user_id)
     {   
-        if (!static::validateNumber($user_id)) {
-            throw new \Exception("Неверный ID пользователя");
+        if (!static::validateNumber($user_id,"user_id")) {
+            return [];
         }
         $user = CUser::GetByID($user_id)->Fetch();
         return $user['UF_LOYALITY_POINTS'];
@@ -50,9 +51,8 @@ class RestController extends Controller
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
         $limit = (int)$request->getQuery("limit") ?: 10;
         $offset = (int)$request->getQuery("offset") ?: 0;
-        echo $limit . " " . $offset;
-        if (!static::validateNumber($user_id) || !static::validateNumber($limit) || !static::validateNumber($offset)) {
-            throw new \Exception("Неверное свойство параметра");
+        if (!static::validateNumber($user_id,"user_id") || !static::validateNumber($limit,"limit") || !static::validateNumber($offset,"offset")) {
+            return [];
         }
         if (!CModule::IncludeModule('iblock')) {
             throw new \Exception("Модуль iblock не установлен");
@@ -66,7 +66,7 @@ class RestController extends Controller
             'PROPERTY_USER_ID' => $user_id,
         ];
         $arSelect = [
-            'PROPERTY_USER_ID', 'DATE_ACTIVE_FROM', 'PROPERTY_AMOUNT',
+            'DATE_ACTIVE_FROM', 'PROPERTY_AMOUNT',
         ];
         $arNavStartParams = [
             'nTopCount' => $limit,
@@ -77,7 +77,13 @@ class RestController extends Controller
         while ($arIBlock = $rsIBlocks->Fetch()) {
             $arIBlocks[] = $arIBlock;
         }
-        return $rsIBlocks;
+        // GetList Возвращает дублирующие свойства, поэтому очищаем их
+        $arResp = [];
+        foreach ($arIBlocks as $key => $iblock) {
+            $arResp[$key]['datetime'] = $iblock['ACTIVE_FROM'];
+            $arResp[$key]['amount'] = $iblock['PROPERTY_AMOUNT_VALUE'];
+        }
+        return $arResp;
     }
 
 }

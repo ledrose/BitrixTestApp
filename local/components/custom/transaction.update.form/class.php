@@ -82,7 +82,7 @@ class TransactionUpdateFormComponent extends CBitrixComponent
             "ACTIVE_FROM" => new DateTime(),
             "PROPERTY_VALUES" => [
                 "USER_ID" => $this->arParams['USER_ID'],
-                "AMOUNT" => $req_args['amount']
+                "AMOUNT" => $score_change
             ]
         ];
         if (!$el->Add($arLoadArray)) {

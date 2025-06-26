@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: 1C-Bitrix Custom REST API
+  version: 1.0.0
+  description: API for managing user loyalty points and history in 1C-Bitrix.
+servers:
+  - url: /api
+    description: Base API URL
+paths:
+  /v1/user/loyalty-points/{user_id}:
+    get:
+      summary: Get user loyalty points
+      description: Retrieves the loyalty points for a specific user.
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to retrieve loyalty points for.
+          example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoyaltyPointsResponse'
+  /v1/user/loyalty-points-history/{user_id}:
+    get:
+      summary: Get user loyalty points history
+      description: Retrieves the loyalty points transaction history for a specific user.
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to retrieve loyalty points history for.
+          example: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          required: false
+          description: Maximum number of history entries to return.
+          example: 5
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+          required: false
+          description: Offset for pagination of history entries.
+          example: 0
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoyaltyPointsHistoryResponse'
+
+components:
+  schemas:
+    LoyaltyPointsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the API call.
+          example: success
+        data:
+          type: integer
+          description: The user's loyalty points.
+          example: 2267
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorResponse'
+          description: List of errors, if any.
+    LoyaltyPointsHistoryItem:
+      type: object
+      properties:
+        datetime:
+          type: string
+          format: date-time
+          description: The date and time of the loyalty point transaction.
+          example: "2023-10-26T10:00:00Z"
+        value:
+          type: number
+          format: float
+          description: The amount of loyalty points changing for this transaction (positive or negative).
+          example: 50.0
+      required:
+        - PROPERTY_USER_ID
+        - DATE_ACTIVE_FROM
+        - PROPERTY_AMOUNT
+    LoyaltyPointsHistoryResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the API call.
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoyaltyPointsHistoryItem'
+          description: Array of loyalty points history entries.
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorResponse'
+          description: List of errors, if any.
+          example: []
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message.
+          example: "Invalid user ID"
+        code:
+          type: integer
+          description: Error code.
+          example: 0
+        customData:
+          type: null | object
+          description: Null or additional data in case of an error.
+          example: []
