@@ -87,7 +87,6 @@ class TransactionUpdateFormComponent extends CBitrixComponent
         ];
         if (!$el->Add($arLoadArray)) {
             $this->arResult['FORM_ERRORS'][] = "Ошибка добавления элемента: " . $el->LAST_ERROR;
-            // Возвращаем баллы обратно в случае ошибки
             $user->Update($this->arParams['USER_ID'], ['UF_LOYALITY_POINTS' => $this->arResult['USER_LOYALITY_POINTS'] - $score_change]);
             return;
         }

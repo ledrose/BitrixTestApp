@@ -1,10 +1,8 @@
 <?
 namespace Custom\Rest\Controller;
 
-use Bitrix\Iblock\IblockTable;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Engine\ActionFilter;
-use CIBlock;
 use CIBlockElement;
 use CModule;
 use CUser;
@@ -25,10 +23,10 @@ class RestController extends Controller
         ];    
     }
 
-    private static function validateNumber(?int $number, string $name)
+    private function validateNumber(?int $number, string $name)
     {
         if (!isset($number) || !is_numeric($number) || $number < 0) {
-            throw new \Exception("Неверное cвойство " . $name);
+            $this->addError(new \Bitrix\Main\Error("Неверное значение параметра " . $name,400));
             return false;
         }
         return true;
@@ -54,7 +52,8 @@ class RestController extends Controller
             return [];
         }
         if (!CModule::IncludeModule('iblock')) {
-            throw new \Exception("Модуль iblock не установлен");
+            $this->addError(new \Bitrix\Main\Error("Модуль iblock не установлен",500));
+            return [];
         }
         // Попытался использовать IblockTable::GetList, но я не нашел информации о том, как отфильтровать по свойстам (PROPERTY_USER_ID)
         $arOrder = [
