@@ -1,6 +1,9 @@
 !/bitrix
 /bitrix/*
 
+# оставляем конфиг 
+!/bitrix/.settings.php
+
 # оставляем печатные формы интернет-магазина
 !/bitrix/admin/
 /bitrix/admin/*
