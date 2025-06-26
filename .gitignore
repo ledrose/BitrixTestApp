@@ -74,5 +74,8 @@ ehthumbs.db
 *.sketch
 core.*
 
+
+.msmtprc
+
 # храним robots.txt 
 !/robots.txt

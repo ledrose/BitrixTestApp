@@ -25,7 +25,6 @@ class RestController extends Controller
         ];    
     }
 
-
     private static function validateNumber(?int $number, string $name)
     {
         if (!isset($number) || !is_numeric($number) || $number < 0) {

@@ -127,6 +127,6 @@ components:
           description: Error code.
           example: 0
         customData:
-          type: null | object
+          type: object
           description: Null or additional data in case of an error.
           example: []

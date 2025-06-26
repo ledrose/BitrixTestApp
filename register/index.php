@@ -19,7 +19,6 @@ if ($USER->IsAuthorized() && !$USER->IsAdmin()) {
         "USE_BACKURL" => "Y", 
         "SUCCESS_PAGE" => "/auth/", 
         "SET_TITLE" => "Y", 
-        "USER_PROPERTY" => Array(),
     )
 );?>
 
